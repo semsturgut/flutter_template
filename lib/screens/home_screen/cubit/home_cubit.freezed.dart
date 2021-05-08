@@ -20,8 +20,11 @@ class _$HomeStateTearOff {
     return const LoadingState();
   }
 
-  ViewState view() {
-    return const ViewState();
+  ViewState view({AlbumResponseModel albums, List<Photo> photos}) {
+    return ViewState(
+      albums: albums,
+      photos: photos,
+    );
   }
 
   ErrorState error({@required String error}) {
@@ -39,14 +42,14 @@ mixin _$HomeState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(AlbumResponseModel albums, List<Photo> photos),
     @required Result error(String error),
   });
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(AlbumResponseModel albums, List<Photo> photos),
     Result error(String error),
     @required Result orElse(),
   });
@@ -117,7 +120,7 @@ class _$InitialState implements InitialState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(AlbumResponseModel albums, List<Photo> photos),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -132,7 +135,7 @@ class _$InitialState implements InitialState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(AlbumResponseModel albums, List<Photo> photos),
     Result error(String error),
     @required Result orElse(),
   }) {
@@ -216,7 +219,7 @@ class _$LoadingState implements LoadingState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(AlbumResponseModel albums, List<Photo> photos),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -231,7 +234,7 @@ class _$LoadingState implements LoadingState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(AlbumResponseModel albums, List<Photo> photos),
     Result error(String error),
     @required Result orElse(),
   }) {
@@ -281,6 +284,7 @@ abstract class LoadingState implements HomeState {
 abstract class $ViewStateCopyWith<$Res> {
   factory $ViewStateCopyWith(ViewState value, $Res Function(ViewState) then) =
       _$ViewStateCopyWithImpl<$Res>;
+  $Res call({AlbumResponseModel albums, List<Photo> photos});
 }
 
 class _$ViewStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
@@ -290,37 +294,65 @@ class _$ViewStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
 
   @override
   ViewState get _value => super._value as ViewState;
+
+  @override
+  $Res call({
+    Object albums = freezed,
+    Object photos = freezed,
+  }) {
+    return _then(ViewState(
+      albums: albums == freezed ? _value.albums : albums as AlbumResponseModel,
+      photos: photos == freezed ? _value.photos : photos as List<Photo>,
+    ));
+  }
 }
 
 class _$ViewState implements ViewState {
-  const _$ViewState();
+  const _$ViewState({this.albums, this.photos});
+
+  @override
+  final AlbumResponseModel albums;
+  @override
+  final List<Photo> photos;
 
   @override
   String toString() {
-    return 'HomeState.view()';
+    return 'HomeState.view(albums: $albums, photos: $photos)';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is ViewState);
+    return identical(this, other) ||
+        (other is ViewState &&
+            (identical(other.albums, albums) ||
+                const DeepCollectionEquality().equals(other.albums, albums)) &&
+            (identical(other.photos, photos) ||
+                const DeepCollectionEquality().equals(other.photos, photos)));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(albums) ^
+      const DeepCollectionEquality().hash(photos);
+
+  @override
+  $ViewStateCopyWith<ViewState> get copyWith =>
+      _$ViewStateCopyWithImpl<ViewState>(this, _$identity);
 
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(AlbumResponseModel albums, List<Photo> photos),
     @required Result error(String error),
   }) {
     assert(initial != null);
     assert(loading != null);
     assert(view != null);
     assert(error != null);
-    return view();
+    return view(albums, photos);
   }
 
   @override
@@ -328,13 +360,13 @@ class _$ViewState implements ViewState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(AlbumResponseModel albums, List<Photo> photos),
     Result error(String error),
     @required Result orElse(),
   }) {
     assert(orElse != null);
     if (view != null) {
-      return view();
+      return view(albums, photos);
     }
     return orElse();
   }
@@ -372,7 +404,12 @@ class _$ViewState implements ViewState {
 }
 
 abstract class ViewState implements HomeState {
-  const factory ViewState() = _$ViewState;
+  const factory ViewState({AlbumResponseModel albums, List<Photo> photos}) =
+      _$ViewState;
+
+  AlbumResponseModel get albums;
+  List<Photo> get photos;
+  $ViewStateCopyWith<ViewState> get copyWith;
 }
 
 abstract class $ErrorStateCopyWith<$Res> {
@@ -432,7 +469,7 @@ class _$ErrorState implements ErrorState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(AlbumResponseModel albums, List<Photo> photos),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -447,7 +484,7 @@ class _$ErrorState implements ErrorState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(AlbumResponseModel albums, List<Photo> photos),
     Result error(String error),
     @required Result orElse(),
   }) {

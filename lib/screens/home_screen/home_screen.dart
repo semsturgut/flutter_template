@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/screens/home_screen/cubit/home_cubit.dart';
 import 'package:flutter_template/widgets/loading_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_template/widgets/photo_tile_widget.dart';
 
 const Duration _changeStateDuration = Duration(milliseconds: 200);
 
@@ -46,7 +47,24 @@ Widget _builder(BuildContext context, HomeState state) => AnimatedSwitcher(
         orElse: () => const Center(child: Text("Unknown problem occured!"))));
 
 Widget _buildView(BuildContext context, ViewState state) {
-  return Center(child: Text('Hello!'));
+  return GridView.builder(
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+    itemBuilder: (BuildContext context, int index) {
+      return PhotoTile(
+        thumbnailUrl: state.photos[index].thumbnailUrl,
+        albumTitle: _decideAlbumTitle(state, index),
+        photoTitle: state.photos[index].title,
+      );
+    },
+  );
+}
+
+String _decideAlbumTitle(ViewState state, int index) {
+  String albumTitle = 'Error';
+  state.albums.albumList.forEach((album) {
+    if (album.id == state.photos[index].albumId) albumTitle = album.title;
+  });
+  return albumTitle;
 }
 
 Widget _buildError(BuildContext context, ErrorState state) {

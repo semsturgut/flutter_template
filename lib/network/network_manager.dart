@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/models/album.dart';
+import 'package:flutter_template/models/album_response_model.dart';
+import 'package:flutter_template/models/photo.dart';
 import 'package:flutter_template/services/api_response_status.dart';
 import 'package:http/http.dart' as http;
-import 'dart:developer' as developer;
 
 class NetworkManager {
   static final NetworkManager _singleton = NetworkManager._internal();
@@ -15,15 +17,56 @@ class NetworkManager {
   static int timeOutSeconds = 60;
 
   static String baseURL;
-  void prpUrls() => baseURL = '';
+  void prpUrls() => baseURL = 'https://jsonplaceholder.typicode.com/';
 
   NetworkManager._internal() {
     client = http.Client();
     prpUrls();
   }
 
-  // static final String infoURL = 'info.0.json';
-  // static final String latestComicURL = baseURL + infoURL;
+  static final String albumsURL = baseURL + 'albums';
+  static final String photosURL = baseURL + 'photos';
+
+  Future<AlbumResponseModel> getAlbumList({int number}) async {
+    http.Response response = await doGet(url: albumsURL);
+    ApiResponseStatus apiResponseStatus;
+    AlbumResponseModel albumResponseModel;
+    List<Album> _albumList = List<Album>();
+    try {
+      apiResponseStatus = _responseStatusConverter(
+          statusCode: response.statusCode, control: false);
+      var body = jsonDecode(response.body);
+      var data = body as List;
+      _albumList
+          .addAll(data.map<Album>((json) => Album.fromJson(json)).toList());
+      albumResponseModel = AlbumResponseModel(
+          albumList: _albumList, responseStatus: apiResponseStatus);
+    } catch (e) {
+      apiResponseStatus = _responseStatusConverter(
+          statusCode: response.statusCode, control: false);
+      albumResponseModel =
+          AlbumResponseModel(albumList: [], responseStatus: apiResponseStatus);
+    }
+    return albumResponseModel;
+  }
+
+  Future<List<Photo>> getPhotoList({int number}) async {
+    http.Response response = await doGet(url: photosURL);
+    // ApiResponseStatus apiResponseStatus;
+    List<Photo> _photoList = List<Photo>();
+    try {
+      // apiResponseStatus = _responseStatusConverter(
+      //     statusCode: response.statusCode, control: false);
+      var body = jsonDecode(response.body);
+      var data = body as List;
+      _photoList
+          .addAll(data.map<Photo>((json) => Photo.fromJson(json)).toList());
+    } catch (e) {
+      // apiResponseStatus = _responseStatusConverter(
+      //     statusCode: response.statusCode, control: false);
+    }
+    return _photoList;
+  }
 
   // Future<dynamic> getLatestComic() async {
   //   http.Response response = await doGet(url: latestComicURL);
@@ -56,17 +99,17 @@ class NetworkManager {
   //   return _comic;
   // }
 
-  // ApiResponseStatus _responseStatusConverter(
-  //     {required int statusCode, bool control = true}) {
-  //   ApiResponseStatus apiResponseStatus =
-  //       handleApiStatusWithBaseResponse(statusCode);
+  ApiResponseStatus _responseStatusConverter(
+      {@required int statusCode, bool control = true}) {
+    ApiResponseStatus apiResponseStatus =
+        handleApiStatusWithBaseResponse(statusCode);
 
-  //   /// This will handle all response status codes and throw as a exception
-  //   if (apiResponseStatus != ApiResponseStatus.successful && control)
-  //     throw apiResponseStatus;
+    /// This will handle all response status codes and throw as a exception
+    if (apiResponseStatus != ApiResponseStatus.successful && control)
+      throw apiResponseStatus;
 
-  //   return apiResponseStatus;
-  // }
+    return apiResponseStatus;
+  }
 
   Future<http.Response> doGet(
       {@required String url, Map<String, String> queryParameters}) async {
@@ -85,27 +128,27 @@ class NetworkManager {
     } on SocketException {
       /// Generic response checker for no connection
       throw ApiResponseStatus.noConnection;
-    } on Exception {
+    } catch (e) {
       /// Generic response checker for unexpected errors
       throw ApiResponseStatus.otherError;
     }
     return response;
   }
 
-  Future<http.Response> doPost(
-      {@required String url, dynamic body, bool useToken = true}) async {
-    // FlutterSecureStorage storage = FlutterSecureStorage();
-    // String token = await storage.read(key: 'token');
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      // if (useToken) 'Authorization': "Bearer " + token
-    };
-    final myBody = jsonEncode(body);
-    final parsedUrl = Uri.parse(url);
-    developer.log(url, name: 'Request Url');
-    if (useToken) developer.log(myBody, name: 'Request Body');
-    return await NetworkManager.instance.client
-        .post(parsedUrl, headers: headers, body: myBody)
-        .timeout(Duration(minutes: timeOutSeconds));
-  }
+  // Future<http.Response> doPost(
+  //     {@required String url, dynamic body, bool useToken = true}) async {
+  //   // FlutterSecureStorage storage = FlutterSecureStorage();
+  //   // String token = await storage.read(key: 'token');
+  //   Map<String, String> headers = {
+  //     'Content-Type': 'application/json',
+  //     // if (useToken) 'Authorization': "Bearer " + token
+  //   };
+  //   final myBody = jsonEncode(body);
+  //   final parsedUrl = Uri.parse(url);
+  //   developer.log(url, name: 'Request Url');
+  //   if (useToken) developer.log(myBody, name: 'Request Body');
+  //   return await NetworkManager.instance.client
+  //       .post(parsedUrl, headers: headers, body: myBody)
+  //       .timeout(Duration(minutes: timeOutSeconds));
+  // }
 }
