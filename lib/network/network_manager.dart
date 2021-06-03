@@ -79,7 +79,7 @@ class NetworkManager {
       // apiResponseStatus = _responseStatusConverter(
       //     statusCode: response.statusCode, control: false);
       var body = jsonDecode(response.body);
-      var data = body as List;
+      var data = body["jobs"] as List;
       _photoList
           .addAll(data.map<Job>((json) => Job.fromJson(json)).toList());
     } catch (e) {
@@ -94,10 +94,10 @@ class NetworkManager {
     // FlutterSecureStorage storage = FlutterSecureStorage();
     // String token = await storage.read(key: 'token');
     Map<String, String> header = {
-      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/json',
       // 'Authorization': "Bearer " + token
     };
-    final parsedUrl = Uri.parse(url).replace(queryParameters: queryParameters);
+    final parsedUrl = Uri.parse(url);
     http.Response response;
     try {
       response = await NetworkManager.instance.client
@@ -113,20 +113,20 @@ class NetworkManager {
     return response;
   }
 
-  Future<http.Response> doPost(
-      {@required String url, dynamic body, bool useToken = true}) async {
-    // FlutterSecureStorage storage = FlutterSecureStorage();
-    // String token = await storage.read(key: 'token');
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      // if (useToken) 'Authorization': "Bearer " + token
-    };
-    final myBody = jsonEncode(body);
-    final parsedUrl = Uri.parse(url);
-    developer.log(url, name: 'Request Url');
-    if (useToken) developer.log(myBody, name: 'Request Body');
-    return await NetworkManager.instance.client
-        .post(parsedUrl, headers: headers, body: myBody)
-        .timeout(Duration(minutes: timeOutSeconds));
-  }
+  // Future<http.Response> doPost(
+  //     {@required String url, dynamic body, bool useToken = true}) async {
+  //   // FlutterSecureStorage storage = FlutterSecureStorage();
+  //   // String token = await storage.read(key: 'token');
+  //   Map<String, String> headers = {
+  //     // 'Content-Type': 'application/json',
+  //     // if (useToken) 'Authorization': "Bearer " + token
+  //   };
+  //   final myBody = jsonEncode(body);
+  //   final parsedUrl = Uri.parse(url);
+  //   developer.log(url, name: 'Request Url');
+  //   if (useToken) developer.log(myBody, name: 'Request Body');
+  //   return await NetworkManager.instance.client
+  //       .post(parsedUrl, headers: headers, body: myBody)
+  //       .timeout(Duration(minutes: timeOutSeconds));
+  // }
 }
