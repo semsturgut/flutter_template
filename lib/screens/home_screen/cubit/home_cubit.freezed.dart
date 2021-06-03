@@ -20,8 +20,10 @@ class _$HomeStateTearOff {
     return const LoadingState();
   }
 
-  ViewState view() {
-    return const ViewState();
+  ViewState view({List<Job> jobList}) {
+    return ViewState(
+      jobList: jobList,
+    );
   }
 
   ErrorState error({@required String error}) {
@@ -39,14 +41,14 @@ mixin _$HomeState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Job> jobList),
     @required Result error(String error),
   });
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Job> jobList),
     Result error(String error),
     @required Result orElse(),
   });
@@ -117,7 +119,7 @@ class _$InitialState implements InitialState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Job> jobList),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -132,7 +134,7 @@ class _$InitialState implements InitialState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Job> jobList),
     Result error(String error),
     @required Result orElse(),
   }) {
@@ -216,7 +218,7 @@ class _$LoadingState implements LoadingState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Job> jobList),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -231,7 +233,7 @@ class _$LoadingState implements LoadingState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Job> jobList),
     Result error(String error),
     @required Result orElse(),
   }) {
@@ -281,6 +283,7 @@ abstract class LoadingState implements HomeState {
 abstract class $ViewStateCopyWith<$Res> {
   factory $ViewStateCopyWith(ViewState value, $Res Function(ViewState) then) =
       _$ViewStateCopyWithImpl<$Res>;
+  $Res call({List<Job> jobList});
 }
 
 class _$ViewStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
@@ -290,37 +293,57 @@ class _$ViewStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
 
   @override
   ViewState get _value => super._value as ViewState;
+
+  @override
+  $Res call({
+    Object jobList = freezed,
+  }) {
+    return _then(ViewState(
+      jobList: jobList == freezed ? _value.jobList : jobList as List<Job>,
+    ));
+  }
 }
 
 class _$ViewState implements ViewState {
-  const _$ViewState();
+  const _$ViewState({this.jobList});
+
+  @override
+  final List<Job> jobList;
 
   @override
   String toString() {
-    return 'HomeState.view()';
+    return 'HomeState.view(jobList: $jobList)';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is ViewState);
+    return identical(this, other) ||
+        (other is ViewState &&
+            (identical(other.jobList, jobList) ||
+                const DeepCollectionEquality().equals(other.jobList, jobList)));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(jobList);
+
+  @override
+  $ViewStateCopyWith<ViewState> get copyWith =>
+      _$ViewStateCopyWithImpl<ViewState>(this, _$identity);
 
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Job> jobList),
     @required Result error(String error),
   }) {
     assert(initial != null);
     assert(loading != null);
     assert(view != null);
     assert(error != null);
-    return view();
+    return view(jobList);
   }
 
   @override
@@ -328,13 +351,13 @@ class _$ViewState implements ViewState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Job> jobList),
     Result error(String error),
     @required Result orElse(),
   }) {
     assert(orElse != null);
     if (view != null) {
-      return view();
+      return view(jobList);
     }
     return orElse();
   }
@@ -372,7 +395,10 @@ class _$ViewState implements ViewState {
 }
 
 abstract class ViewState implements HomeState {
-  const factory ViewState() = _$ViewState;
+  const factory ViewState({List<Job> jobList}) = _$ViewState;
+
+  List<Job> get jobList;
+  $ViewStateCopyWith<ViewState> get copyWith;
 }
 
 abstract class $ErrorStateCopyWith<$Res> {
@@ -432,7 +458,7 @@ class _$ErrorState implements ErrorState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Job> jobList),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -447,7 +473,7 @@ class _$ErrorState implements ErrorState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Job> jobList),
     Result error(String error),
     @required Result orElse(),
   }) {

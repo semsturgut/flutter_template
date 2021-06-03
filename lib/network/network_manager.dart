@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/models/job.dart';
 import 'package:flutter_template/services/api_response_status.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
@@ -15,12 +16,14 @@ class NetworkManager {
   static int timeOutSeconds = 60;
 
   static String baseURL;
-  void prpUrls() => baseURL = '';
+  void prpUrls() => baseURL = 'https://remotive.io/api/';
 
   NetworkManager._internal() {
     client = http.Client();
     prpUrls();
   }
+
+  static final String jobsURL = baseURL + 'remote-jobs?limit=10';
 
   // static final String infoURL = 'info.0.json';
   // static final String latestComicURL = baseURL + infoURL;
@@ -67,6 +70,24 @@ class NetworkManager {
 
   //   return apiResponseStatus;
   // }
+
+  Future<List<Job>> getJobList() async {
+    http.Response response = await doGet(url: jobsURL);
+    // ApiResponseStatus apiResponseStatus;
+    List<Job> _photoList = [];
+    try {
+      // apiResponseStatus = _responseStatusConverter(
+      //     statusCode: response.statusCode, control: false);
+      var body = jsonDecode(response.body);
+      var data = body as List;
+      _photoList
+          .addAll(data.map<Job>((json) => Job.fromJson(json)).toList());
+    } catch (e) {
+      // apiResponseStatus = _responseStatusConverter(
+      //     statusCode: response.statusCode, control: false);
+    }
+    return _photoList;
+  }
 
   Future<http.Response> doGet(
       {@required String url, Map<String, String> queryParameters}) async {

@@ -46,7 +46,14 @@ Widget _builder(BuildContext context, HomeState state) => AnimatedSwitcher(
         orElse: () => const Center(child: Text("Unknown problem occured!"))));
 
 Widget _buildView(BuildContext context, ViewState state) {
-  return Center(child: Text('Hello!'));
+  return ListView.builder(
+      itemCount: state.jobList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+          title: Text(state.jobList.elementAt(index).title),
+          subtitle: Text(state.jobList.elementAt(index).companyName),
+        );
+      });
 }
 
 Widget _buildError(BuildContext context, ErrorState state) {
