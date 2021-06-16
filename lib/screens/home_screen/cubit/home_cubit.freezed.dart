@@ -20,8 +20,10 @@ class _$HomeStateTearOff {
     return const LoadingState();
   }
 
-  ViewState view() {
-    return const ViewState();
+  ViewState view({List<Customer> customerList}) {
+    return ViewState(
+      customerList: customerList,
+    );
   }
 
   ErrorState error({@required String error}) {
@@ -39,14 +41,14 @@ mixin _$HomeState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Customer> customerList),
     @required Result error(String error),
   });
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Customer> customerList),
     Result error(String error),
     @required Result orElse(),
   });
@@ -117,7 +119,7 @@ class _$InitialState implements InitialState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Customer> customerList),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -132,7 +134,7 @@ class _$InitialState implements InitialState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Customer> customerList),
     Result error(String error),
     @required Result orElse(),
   }) {
@@ -216,7 +218,7 @@ class _$LoadingState implements LoadingState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Customer> customerList),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -231,7 +233,7 @@ class _$LoadingState implements LoadingState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Customer> customerList),
     Result error(String error),
     @required Result orElse(),
   }) {
@@ -281,6 +283,7 @@ abstract class LoadingState implements HomeState {
 abstract class $ViewStateCopyWith<$Res> {
   factory $ViewStateCopyWith(ViewState value, $Res Function(ViewState) then) =
       _$ViewStateCopyWithImpl<$Res>;
+  $Res call({List<Customer> customerList});
 }
 
 class _$ViewStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
@@ -290,37 +293,60 @@ class _$ViewStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
 
   @override
   ViewState get _value => super._value as ViewState;
+
+  @override
+  $Res call({
+    Object customerList = freezed,
+  }) {
+    return _then(ViewState(
+      customerList: customerList == freezed
+          ? _value.customerList
+          : customerList as List<Customer>,
+    ));
+  }
 }
 
 class _$ViewState implements ViewState {
-  const _$ViewState();
+  const _$ViewState({this.customerList});
+
+  @override
+  final List<Customer> customerList;
 
   @override
   String toString() {
-    return 'HomeState.view()';
+    return 'HomeState.view(customerList: $customerList)';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is ViewState);
+    return identical(this, other) ||
+        (other is ViewState &&
+            (identical(other.customerList, customerList) ||
+                const DeepCollectionEquality()
+                    .equals(other.customerList, customerList)));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(customerList);
+
+  @override
+  $ViewStateCopyWith<ViewState> get copyWith =>
+      _$ViewStateCopyWithImpl<ViewState>(this, _$identity);
 
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Customer> customerList),
     @required Result error(String error),
   }) {
     assert(initial != null);
     assert(loading != null);
     assert(view != null);
     assert(error != null);
-    return view();
+    return view(customerList);
   }
 
   @override
@@ -328,13 +354,13 @@ class _$ViewState implements ViewState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Customer> customerList),
     Result error(String error),
     @required Result orElse(),
   }) {
     assert(orElse != null);
     if (view != null) {
-      return view();
+      return view(customerList);
     }
     return orElse();
   }
@@ -372,7 +398,10 @@ class _$ViewState implements ViewState {
 }
 
 abstract class ViewState implements HomeState {
-  const factory ViewState() = _$ViewState;
+  const factory ViewState({List<Customer> customerList}) = _$ViewState;
+
+  List<Customer> get customerList;
+  $ViewStateCopyWith<ViewState> get copyWith;
 }
 
 abstract class $ErrorStateCopyWith<$Res> {
@@ -432,7 +461,7 @@ class _$ErrorState implements ErrorState {
   Result when<Result extends Object>({
     @required Result initial(),
     @required Result loading(),
-    @required Result view(),
+    @required Result view(List<Customer> customerList),
     @required Result error(String error),
   }) {
     assert(initial != null);
@@ -447,7 +476,7 @@ class _$ErrorState implements ErrorState {
   Result maybeWhen<Result extends Object>({
     Result initial(),
     Result loading(),
-    Result view(),
+    Result view(List<Customer> customerList),
     Result error(String error),
     @required Result orElse(),
   }) {

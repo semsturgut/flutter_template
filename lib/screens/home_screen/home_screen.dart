@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/models/customer.dart';
+import 'package:flutter_template/screens/detail_screen/detail_screen.dart';
 import 'package:flutter_template/screens/home_screen/cubit/home_cubit.dart';
 import 'package:flutter_template/widgets/loading_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +48,38 @@ Widget _builder(BuildContext context, HomeState state) => AnimatedSwitcher(
         orElse: () => const Center(child: Text("Unknown problem occured!"))));
 
 Widget _buildView(BuildContext context, ViewState state) {
-  return Center(child: Text('Hello!'));
+  return ListView.builder(
+    itemCount: state.customerList.length,
+    itemBuilder: (BuildContext context, int index) {
+      return ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailScreen(
+                    customer: state.customerList.elementAt(index))),
+          );
+        },
+        title: Text(
+          state.customerList.elementAt(index).firstName +
+              " " +
+              state.customerList.elementAt(index).lastName,
+        ),
+        subtitle: Text(_emailAddress(state.customerList.elementAt(index))),
+      );
+    },
+  );
+}
+
+String _emailAddress(Customer customer) {
+  String _emailAddress;
+  if (customer.contacts != null)
+    customer.contacts.forEach((c) {
+      if (c.primary && c.type == "EmailAddress")
+        _emailAddress = c.value.address;
+    });
+
+  return _emailAddress ?? "";
 }
 
 Widget _buildError(BuildContext context, ErrorState state) {
